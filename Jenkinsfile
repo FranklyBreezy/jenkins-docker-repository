@@ -5,7 +5,7 @@ pipeline {
 
     // Tell Jenkins to install and use the Docker CLI tool
     tools {
-        docker 'docker-cli'
+        dockerTool 'docker-cli'
     }
 
     // Define environment variables
