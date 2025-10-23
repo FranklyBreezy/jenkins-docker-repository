@@ -3,6 +3,12 @@ pipeline {
     // Run on any available Jenkins agent
     agent any
 
+    // Tell Jenkins to install and use the Docker CLI tool
+    tools {
+        docker 'docker-cli'
+    }
+
+    // Define environment variables
     // Define environment variables
     environment {
         // Your Docker Hub username
