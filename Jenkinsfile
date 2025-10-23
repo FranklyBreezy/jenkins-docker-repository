@@ -53,17 +53,19 @@ pipeline {
         // Stage 4: Push images to Docker Hub (Task 4)
         stage('Push Images to Docker Hub') {
             steps {
-                // Wrap the following steps in a 'script' block
-                script {
-                    // Log in to Docker Hub using the credentials ID we set up
-                    docker.withRegistry('https://registry.hub.docker.com', 'dockerhub-creds') {
-                        
-                        // Push the user-service image
-                        docker.image("${DOCKERHUB_USER}/user-service:latest").push()
-
-                        // Push the order-service image
-                        docker.image("${DOCKERHUB_USER}/order-service:latest").push()
-                    }
+                // Use 'withCredentials' to securely access your 'dockerhub-creds'
+                // This puts the username in $DOCKER_USER and password in $DOCKER_PASS
+                withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                    
+                    // Run docker login as a shell command.
+                    // We pipe the password via stdin for security. This is the new login step.
+                    sh 'echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin'
+                    
+                    // Run docker push as a shell command
+                    sh "docker push ${DOCKERHUB_USER}/user-service:latest"
+                    
+                    // Run docker push as a shell command
+                    sh "docker push ${DOCKERHUB_USER}/order-service:latest"
                 }
             }
         }
