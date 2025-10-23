@@ -59,7 +59,7 @@ pipeline {
                     
                     // Run docker login as a shell command.
                     // We pipe the password via stdin for security. This is the new login step.
-                    sh 'echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin'
+                    sh 'docker login -u $DOCKER_USER -p $DOCKER_PASS'
                     
                     // Run docker push as a shell command
                     sh "docker push ${DOCKERHUB_USER}/user-service:latest"
